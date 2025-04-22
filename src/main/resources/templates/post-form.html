@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #fff7f0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #ff7f00;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-control {
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            border-radius: 2rem;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: #ff7f00;
+            border-color: #ff7f00;
+        }
+
+        .btn-primary:hover {
+            background-color: #e67300;
+            border-color: #e67300;
+        }
+
+        .btn-secondary {
+            background-color: #ffcc99;
+            border-color: #ffcc99;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #ffbb77;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2 th:text="${post.id == 0 ? 'Create New Post' : 'Edit Post'}">Create/Edit Post</h2>
+
+    <form th:action="${post.id == 0 ? '/posts' : '/posts/' + post.id}" th:object="${post}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" th:field="*{title}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="author">Author</label>
+            <input type="text" class="form-control" id="author" th:field="*{author}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="content">Content</label>
+            <textarea class="form-control" id="content" th:field="*{content}" rows="5" required></textarea>
+        </div>
+
+
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a th:href="@{/posts}" class="btn btn-secondary ml-2">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

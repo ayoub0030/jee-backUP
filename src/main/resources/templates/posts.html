@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>hespress</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #fff7f0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h4 {
+            color: #ff7f00;
+            font-weight: bold;
+        }
+
+        /* Input & search buttons */
+        .form-control {
+            border-radius: 2rem;
+        }
+
+        .btn {
+            border-radius: 2rem;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: #ff7f00;
+            border-color: #ff7f00;
+        }
+
+        .btn-primary:hover {
+            background-color: #e67300;
+            border-color: #e67300;
+        }
+
+        .btn-secondary {
+            background-color: #ffcc99;
+            border-color: #ffcc99;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #ffbb77;
+        }
+
+        .btn-success {
+            background-color: #ffa94d;
+            border-color: #ffa94d;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #e68a00;
+        }
+
+        .btn-info {
+            background-color: #ffb84d;
+            border-color: #ffb84d;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #ffa31a;
+        }
+
+        .btn-warning {
+            background-color: #ff9900;
+            border-color: #ff9900;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e68a00;
+        }
+
+        .btn-danger {
+            background-color: #ff4d4d;
+            border-color: #ff4d4d;
+        }
+
+        .btn-danger:hover {
+            background-color: #e60000;
+        }
+
+        .table thead {
+            background-color: #ff944d;
+            color: white;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .alert-info {
+            background-color: #ffe0cc;
+            border-color: #ffc299;
+            color: #663300;
+        }
+
+        .pagination .page-link {
+            color: #ff7f00;
+            border-radius: 1rem;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #ff7f00;
+            border-color: #ff7f00;
+            color: white;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #ffe0cc;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>hesspress Blogs</h2>
+
+    <!-- Top row with search and add button -->
+    <div class="row mb-3">
+        <!-- Search Form -->
+
+        <!-- Add New Post Button -->
+        <div class="col-md-4 text-right">
+            <a th:href="@{/posts/new}" class="btn btn-success">Add New Post</a>
+        </div>
+    </div>
+
+    <!-- Search result message if keyword exists -->
+    <div th:if="${keyword != null && keyword != ''}" class="alert alert-info">
+        Search results for: <strong th:text="${keyword}"></strong>
+    </div>
+
+    <h4>Posts</h4>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${posts}">
+            <td th:text="${post.id}"></td>
+            <td th:text="${post.title}"></td>
+            <td th:text="${post.author}"></td>
+            <td>
+                <a th:href="@{/posts/view/{id}(id=${post.id})}" class="btn btn-info btn-sm">View</a>
+
+                <a th:href="@{/posts/delete/{id}(id=${post.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+            </td>
+        </tr>
+        <tr th:if="${posts.empty}">
+            <td colspan="4" class="text-center">No posts found</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
+        <nav>
+            <ul class="pagination">
+                <!-- Previous Button -->
+                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/posts(page=${currentPage - 1}, size=${pageSize}, keyword=${keyword})}">&laquo; Previous</a>
+                </li>
+
+                <!-- Page Numbers -->
+                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${pageNum == currentPage ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/posts(page=${pageNum}, size=${pageSize}, keyword=${keyword})}" th:text="${pageNum + 1}"></a>
+                </li>
+
+                <!-- Next Button -->
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/posts(page=${currentPage + 1}, size=${pageSize}, keyword=${keyword})}">Next &raquo;</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Pagination Info -->
+    <div class="mt-2 text-center">
+        <span th:if="${totalItems > 0}">
+            Showing <span th:text="${currentPage * pageSize + 1}"></span> to
+            <span th:text="${currentPage * pageSize + posts.size()}"></span> of
+            <
