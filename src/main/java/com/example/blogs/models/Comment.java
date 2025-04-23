@@ -7,23 +7,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "posts")
-public class Post {
+@Table(name = "comments")
+public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
-    private String author;
+    private String toComment;
     private String content;
 
     // Constructors
-    public Post() {
+    public Comment() {
     }
 
-    public Post(int id, String title, String author, String content) {
+    public Comment(int id, String title, String toComment, String content) {
         this.id = id;
         this.title = title;
-        this.author = author;
+        this.toComment = toComment;
         this.content = content;
     }
 
@@ -44,12 +45,12 @@ public class Post {
         this.title = title;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getToComment() {
+        return toComment;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setToComment(String toComment) {
+        this.toComment = toComment;
     }
 
     public String getContent() {
@@ -62,10 +63,10 @@ public class Post {
 
     @Override
     public String toString() {
-        return "Post{" +
+        return "Comment{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", author='" + author + '\'' +
+                ", toComment='" + toComment + '\'' +
                 ", content='" + content + '\'' +
                 '}';
     }

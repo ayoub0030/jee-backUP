@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        h1 {
+            color: #ff7f00;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            border-radius: 2rem;
+            font-weight: 500;
+            padding: 15px 25px;
+            font-size: 18px;
+        }
+
+        .btn-primary {
+            background-color: #ff7f00;
+            border-color: #ff7f00;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #e67300;
+            border-color: #e67300;
+        }
+
+        .btn-secondary {
+            background-color: #ffcc99;
+            border-color: #ffcc99;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #ffbb77;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>Choose What to Browse</h1>
+
+<div class="btn-group">
+    <a href="/posts" class="btn btn-primary">Posts</a>
+    <a href="/users" class="btn btn-secondary">Users</a>
+    <a href="/comments" class="btn btn-primary">comments</a>
+</div>
+</body>
+</html>
