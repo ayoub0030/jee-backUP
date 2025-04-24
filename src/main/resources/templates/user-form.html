@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #fff7f0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #ff7f00;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            border-radius: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: #ff7f00;
+            border-color: #ff7f00;
+        }
+
+        .btn-primary:hover {
+            background-color: #e67300;
+            border-color: #e67300;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .error-text {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 th:text="${user.id == null ? 'Create New User' : 'Edit User'}">User Form</h2>
+
+            <form th:action="@{/users/save}" th:object="${user}" method="post">
+                <!-- Hidden field for ID (for edit operations) -->
+                <input type="hidden" th:field="*{id}">
+
+                <!-- Name field -->
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                </div>
+
+                <!-- Email field -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                </div>
+
+                <!-- Password field (required for new users, optional for existing) -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" th:field="*{password}" 
+                           th:required="${user.id == null}">
+                    <small class="form-text text-muted" th:if="${user.id != null}">
+                        Leave blank to keep the current password
+                    </small>
+                </div>
+
+                <!-- Submit and Cancel buttons -->
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-primary mr-2">Save</button>
+                    <a th:href="@{/users}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -13,22 +13,21 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Service
+/**
+ * Supabase Post Service - Disabled for MySQL only configuration
+ */
+// @Service
 public class SupabasePostService {
 
     private final RestTemplate restTemplate;
     private final Gson gson = new Gson();
-    private final String supabaseUrl;
-    private final String supabaseKey;
+    private final String supabaseUrl = "https://example.com";
+    private final String supabaseKey = "dummy-key";
     private static final String POSTS_TABLE = "posts";
 
     @Autowired
-    public SupabasePostService(RestTemplate restTemplate, 
-                               @Value("${supabase.url}") String supabaseUrl,
-                               @Value("${supabase.key}") String supabaseKey) {
+    public SupabasePostService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.supabaseUrl = supabaseUrl;
-        this.supabaseKey = supabaseKey;
     }
 
     // Helper method to create HTTP headers with Supabase authentication

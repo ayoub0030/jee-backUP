@@ -1,5 +1,6 @@
 package com.example.blogs.controllers;
-import com.example.blogs.Services.SupabasePostService;
+
+import com.example.blogs.Services.JpaPostService;
 import com.example.blogs.models.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,7 +12,7 @@ import java.util.List;
 @Controller
 public class PostController {
     @Autowired
-    private SupabasePostService postService;
+    private JpaPostService postService;
 
     // You have a duplicate mapping, removing the first one
     @GetMapping("/posts")
@@ -45,7 +46,7 @@ public class PostController {
         return "posts";
     }
 
-    // Rest of your controller methods remain the same
+    // Show new post form
     @GetMapping("/posts/new")
     public String showNewPostForm(Model model) {
         Post post = new Post();
@@ -53,12 +54,14 @@ public class PostController {
         return "post-form";
     }
 
+    // Create a new post
     @PostMapping("/posts")
     public String createPost(@ModelAttribute("post") Post post) {
         postService.createPost(post);
         return "redirect:/posts";
     }
 
+    // Show edit post form
     @GetMapping("/posts/edit/{id}")
     public String showEditPostForm(@PathVariable Long id, Model model) {
         Post post = postService.getPostById(id);
@@ -66,12 +69,14 @@ public class PostController {
         return "post-form";
     }
 
+    // Update an existing post
     @PostMapping("/posts/{id}")
     public String updatePost(@PathVariable Long id, @ModelAttribute("post") Post post) {
         postService.updatePost(id, post);
         return "redirect:/posts";
     }
 
+    // View a post
     @GetMapping("/posts/view/{id}")
     public String viewPost(@PathVariable Long id, Model model) {
         Post post = postService.getPostById(id);
@@ -79,6 +84,7 @@ public class PostController {
         return "post-view";
     }
 
+    // Delete a post
     @GetMapping("/posts/delete/{id}")
     public String deletePost(@PathVariable Long id) {
         postService.deletePost(id);

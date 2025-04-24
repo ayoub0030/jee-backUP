@@ -2,24 +2,58 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>hespress</title>
+    <title>Hespress Blog</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #ff7f00;
+            --primary-dark: #e67300;
+            --primary-light: #ffcc99;
+            --secondary-color: #6c757d;
+            --light-bg: #fff7f0;
+        }
+        
         body {
-            background-color: #fff7f0;
+            background-color: var(--light-bg);
             font-family: 'Segoe UI', sans-serif;
+            color: #333;
         }
 
         .container {
-            background: #ffffff;
-            border-radius: 1rem;
             padding: 2rem;
-            box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
         }
 
         h2, h4 {
-            color: #ff7f00;
+            color: var(--primary-color);
             font-weight: bold;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+        }
+        
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            margin: 0 0.2rem;
+            transition: all 0.2s;
+        }
+        
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white !important;
         }
 
         /* Input & search buttons */
@@ -33,18 +67,18 @@
         }
 
         .btn-primary {
-            background-color: #ff7f00;
-            border-color: #ff7f00;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
 
         .btn-primary:hover {
-            background-color: #e67300;
-            border-color: #e67300;
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
         }
 
         .btn-secondary {
-            background-color: #ffcc99;
-            border-color: #ffcc99;
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
             color: #333;
         }
 
@@ -62,44 +96,6 @@
             background-color: #e68a00;
         }
 
-        .btn-info {
-            background-color: #ffb84d;
-            border-color: #ffb84d;
-            color: white;
-        }
-
-        .btn-info:hover {
-            background-color: #ffa31a;
-        }
-
-        .btn-warning {
-            background-color: #ff9900;
-            border-color: #ff9900;
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background-color: #e68a00;
-        }
-
-        .btn-danger {
-            background-color: #ff4d4d;
-            border-color: #ff4d4d;
-        }
-
-        .btn-danger:hover {
-            background-color: #e60000;
-        }
-
-        .table thead {
-            background-color: #ff944d;
-            color: white;
-        }
-
-        .table th, .table td {
-            vertical-align: middle;
-        }
-
         .alert-info {
             background-color: #ffe0cc;
             border-color: #ffc299;
@@ -107,94 +103,255 @@
         }
 
         .pagination .page-link {
-            color: #ff7f00;
+            color: var(--primary-color);
             border-radius: 1rem;
         }
 
         .pagination .page-item.active .page-link {
-            background-color: #ff7f00;
-            border-color: #ff7f00;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
             color: white;
         }
 
         .pagination .page-link:hover {
             background-color: #ffe0cc;
         }
+        
+        /* Post Card Styles */
+        .post-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .post-card .card-img-top {
+            height: 180px;
+            object-fit: cover;
+            object-position: center;
+            background-color: #eee;
+        }
+        
+        .post-card .card-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .post-card .card-text {
+            color: #555;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: #777;
+        }
+        
+        .post-meta .meta-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .post-meta i {
+            margin-right: 0.4rem;
+            color: var(--primary-color);
+        }
+        
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .featured-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+        }
     </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h2>hesspress Blogs</h2>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-newspaper mr-2"></i>Hespress Blog
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home mr-1"></i> Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/posts"><i class="fas fa-file-alt mr-1"></i> Posts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/users"><i class="fas fa-users mr-1"></i> Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/comments"><i class="fas fa-comments mr-1"></i> Comments</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Top row with search and add button -->
-    <div class="row mb-3">
-        <!-- Search Form -->
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Hespress Blog Posts</h2>
+            <a th:href="@{/posts/new}" class="btn btn-success">
+                <i class="fas fa-plus mr-1"></i> New Post
+            </a>
+        </div>
 
-        <!-- Add New Post Button -->
-        <div class="col-md-4 text-right">
-            <a th:href="@{/posts/new}" class="btn btn-success">Add New Post</a>
+        <!-- Search form -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <form th:action="@{/posts}" method="get" class="form-inline">
+                    <div class="input-group w-100">
+                        <input type="text" class="form-control" name="keyword" 
+                               placeholder="Search by title or content" th:value="${keyword}">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4 text-right">
+                <a th:href="@{/posts}" class="btn btn-secondary" th:if="${keyword != null && keyword != ''}">
+                    <i class="fas fa-times"></i> Clear Search
+                </a>
+            </div>
+        </div>
+
+        <!-- Search result message if keyword exists -->
+        <div th:if="${keyword != null && keyword != ''}" class="alert alert-info">
+            Search results for: <strong th:text="${keyword}"></strong>
+        </div>
+
+        <!-- Blog Post Cards -->
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="post : ${posts}">
+                <div class="card post-card h-100">
+                    <!-- Placeholder image - in a real app you might have actual post images -->
+                    <div class="card-img-top d-flex align-items-center justify-content-center bg-light">
+                        <i class="fas fa-newspaper fa-3x text-muted"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${post.title}">Post Title</h5>
+                        
+                        <div class="post-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-user"></i>
+                                <span th:text="${post.author}">Author</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="far fa-calendar-alt"></i>
+                                <span th:text="${#temporals.format(post.createdAt, 'MMM dd, yyyy')}">Date</span>
+                            </div>
+                        </div>
+                        
+                        <p class="card-text" th:text="${#strings.length(post.content) > 150 ? #strings.substring(post.content, 0, 150) + '...' : post.content}">
+                            Post content preview...
+                        </p>
+                        
+                        <div class="post-actions">
+                            <a th:href="@{/posts/view/{id}(id=${post.id})}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-book-open mr-1"></i> Read More
+                            </a>
+                            <div>
+                                <a th:href="@{/posts/edit/{id}(id=${post.id})}" class="btn btn-warning btn-sm mr-1">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:href="@{/posts/delete/{id}(id=${post.id})}" class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Are you sure you want to delete this post?')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty state -->
+            <div class="col-12 text-center py-5" th:if="${#lists.isEmpty(posts)}">
+                <div class="card p-5 bg-light">
+                    <i class="fas fa-newspaper fa-4x text-muted mb-3"></i>
+                    <h4>No Posts Found</h4>
+                    <p class="text-muted">There are no blog posts available at the moment.</p>
+                    <a th:href="@{/posts/new}" class="btn btn-primary mt-3">
+                        <i class="fas fa-plus mr-1"></i> Create Your First Post
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination">
+                    <!-- Previous Button -->
+                    <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/posts(page=${currentPage - 1}, size=${pageSize}, keyword=${keyword})}">&laquo; Previous</a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${pageNum == currentPage ? 'active' : ''}">
+                        <a class="page-link" th:href="@{/posts(page=${pageNum}, size=${pageSize}, keyword=${keyword})}" th:text="${pageNum + 1}"></a>
+                    </li>
+
+                    <!-- Next Button -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/posts(page=${currentPage + 1}, size=${pageSize}, keyword=${keyword})}">Next &raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Pagination Info -->
+        <div class="mt-2 text-center mb-4">
+            <span th:if="${totalItems > 0}">
+                Showing <span th:text="${currentPage * pageSize + 1}"></span> to
+                <span th:text="${currentPage * pageSize + posts.size()}"></span> of
+                <span th:text="${totalItems}"></span> posts.
+            </span>
         </div>
     </div>
 
-    <!-- Search result message if keyword exists -->
-    <div th:if="${keyword != null && keyword != ''}" class="alert alert-info">
-        Search results for: <strong th:text="${keyword}"></strong>
-    </div>
-
-    <h4>Posts</h4>
-    <table class="table table-bordered table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="post : ${posts}">
-            <td th:text="${post.id}"></td>
-            <td th:text="${post.title}"></td>
-            <td th:text="${post.author}"></td>
-            <td>
-                <a th:href="@{/posts/view/{id}(id=${post.id})}" class="btn btn-info btn-sm">View</a>
-
-                <a th:href="@{/posts/delete/{id}(id=${post.id})}" class="btn btn-danger btn-sm"
-                   onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
-            </td>
-        </tr>
-        <tr th:if="${posts.empty}">
-            <td colspan="4" class="text-center">No posts found</td>
-        </tr>
-        </tbody>
-    </table>
-
-    <!-- Pagination -->
-    <div th:if="${totalPages > 1}" class="d-flex justify-content-center mt-4">
-        <nav>
-            <ul class="pagination">
-                <!-- Previous Button -->
-                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                    <a class="page-link" th:href="@{/posts(page=${currentPage - 1}, size=${pageSize}, keyword=${keyword})}">&laquo; Previous</a>
-                </li>
-
-                <!-- Page Numbers -->
-                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:classappend="${pageNum == currentPage ? 'active' : ''}">
-                    <a class="page-link" th:href="@{/posts(page=${pageNum}, size=${pageSize}, keyword=${keyword})}" th:text="${pageNum + 1}"></a>
-                </li>
-
-                <!-- Next Button -->
-                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                    <a class="page-link" th:href="@{/posts(page=${currentPage + 1}, size=${pageSize}, keyword=${keyword})}">Next &raquo;</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-    <!-- Pagination Info -->
-    <div class="mt-2 text-center">
-        <span th:if="${totalItems > 0}">
-            Showing <span th:text="${currentPage * pageSize + 1}"></span> to
-            <span th:text="${currentPage * pageSize + posts.size()}"></span> of
-            <
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
