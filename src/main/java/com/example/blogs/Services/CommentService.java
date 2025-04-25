@@ -9,6 +9,7 @@ import com.example.blogs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,27 @@ public class CommentService {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+    }
+
+    // Get all comments with pagination and optional search
+    public Page<Comment> getAllComments(Pageable pageable, String keyword) {
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            // Create a specification for searching in content or authorName
+            return commentRepository.findAll((root, query, cb) -> {
+                String searchTerm = "%" + keyword.toLowerCase() + "%";
+                return cb.or(
+                    cb.like(cb.lower(root.get("content")), searchTerm),
+                    cb.like(cb.lower(root.get("authorName")), searchTerm)
+                );
+            }, pageable);
+        } else {
+            return commentRepository.findAll(pageable);
+        }
+    }
+
+    // Get all comments
+    public List<Comment> getAllComments() {
+        return commentRepository.findAll();
     }
 
     // Create a new comment

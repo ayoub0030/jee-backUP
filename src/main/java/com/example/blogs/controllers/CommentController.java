@@ -3,12 +3,18 @@ package com.example.blogs.controllers;
 import com.example.blogs.Services.CommentService;
 import com.example.blogs.models.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 public class CommentController {
@@ -18,6 +24,27 @@ public class CommentController {
     @Autowired
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
+    }
+
+    // View all comments with pagination
+    @GetMapping("/comments")
+    public String getAllComments(
+            Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String keyword) {
+        
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Comment> commentPage = commentService.getAllComments(pageable, keyword);
+        
+        model.addAttribute("comments", commentPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", commentPage.getTotalPages());
+        model.addAttribute("totalItems", commentPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("keyword", keyword);
+        
+        return "comments";
     }
 
     // Add a comment to a post
