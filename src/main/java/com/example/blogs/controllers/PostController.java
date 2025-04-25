@@ -81,6 +81,7 @@ public class PostController {
     public String viewPost(@PathVariable Long id, Model model) {
         Post post = postService.getPostById(id);
         model.addAttribute("post", post);
+        // Comments are loaded automatically via the @OneToMany relationship in Post
         return "post-view";
     }
 

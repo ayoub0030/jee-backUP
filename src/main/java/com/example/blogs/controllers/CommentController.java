@@ -1,0 +1,159 @@
+package com.example.blogs.controllers;
+
+import com.example.blogs.Services.CommentService;
+import com.example.blogs.models.Comment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+public class CommentController {
+
+    private final CommentService commentService;
+
+    @Autowired
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
+    // Add a comment to a post
+    @PostMapping("/posts/{postId}/comments")
+    public String addComment(@PathVariable Long postId, 
+                            @ModelAttribute Comment comment,
+                            @RequestParam(required = false) Long userId,
+                            @RequestParam(required = false) String authorName,
+                            RedirectAttributes redirectAttributes) {
+        try {
+            if (userId != null) {
+                commentService.createComment(comment, postId, userId);
+            } else {
+                // If no user ID is provided, use the author name
+                if (authorName == null || authorName.trim().isEmpty()) {
+                    authorName = "Anonymous";
+                }
+                commentService.createComment(comment, postId, authorName);
+            }
+            redirectAttributes.addFlashAttribute("success", "Comment added successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error adding comment: " + e.getMessage());
+        }
+        return "redirect:/posts/view/" + postId;
+    }
+
+    // Edit comment form
+    @GetMapping("/comments/{id}/edit")
+    public String showEditCommentForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Comment comment = commentService.getCommentById(id)
+                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
+            
+            model.addAttribute("comment", comment);
+            return "comment-edit";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error loading comment: " + e.getMessage());
+            // Redirect to post view - we'll need to get the post ID
+            Long postId = commentService.getCommentById(id)
+                .map(c -> c.getPost().getId())
+                .orElse(null);
+                
+            if (postId != null) {
+                return "redirect:/posts/view/" + postId;
+            } else {
+                return "redirect:/posts";
+            }
+        }
+    }
+
+    // Update comment
+    @PostMapping("/comments/{id}")
+    public String updateComment(@PathVariable Long id, 
+                              @ModelAttribute Comment comment,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            Comment updatedComment = commentService.updateComment(id, comment);
+            redirectAttributes.addFlashAttribute("success", "Comment updated successfully!");
+            return "redirect:/posts/view/" + updatedComment.getPost().getId();
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error updating comment: " + e.getMessage());
+            return "redirect:/posts";
+        }
+    }
+
+    // Delete comment
+    @GetMapping("/comments/{id}/delete")
+    public String deleteComment(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            // Get post ID before deleting the comment
+            Long postId = commentService.getCommentById(id)
+                .map(c -> c.getPost().getId())
+                .orElse(null);
+                
+            commentService.deleteComment(id);
+            redirectAttributes.addFlashAttribute("success", "Comment deleted successfully!");
+            
+            if (postId != null) {
+                return "redirect:/posts/view/" + postId;
+            } else {
+                return "redirect:/posts";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error deleting comment: " + e.getMessage());
+            return "redirect:/posts";
+        }
+    }
+
+    // REST API endpoints for Comments
+    
+    // Get all comments for a post
+    @GetMapping("/api/posts/{postId}/comments")
+    @ResponseBody
+    public ResponseEntity<?> getCommentsForPost(@PathVariable Long postId) {
+        try {
+            return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error fetching comments: " + e.getMessage());
+        }
+    }
+    
+    // Add a comment (REST API)
+    @PostMapping("/api/posts/{postId}/comments")
+    @ResponseBody
+    public ResponseEntity<?> addCommentApi(@PathVariable Long postId, 
+                                        @RequestBody Comment comment,
+                                        @RequestParam(required = false) Long userId,
+                                        @RequestParam(required = false) String authorName) {
+        try {
+            Comment savedComment;
+            if (userId != null) {
+                savedComment = commentService.createComment(comment, postId, userId);
+            } else {
+                if (authorName == null || authorName.trim().isEmpty()) {
+                    authorName = "Anonymous";
+                }
+                savedComment = commentService.createComment(comment, postId, authorName);
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error creating comment: " + e.getMessage());
+        }
+    }
+    
+    // Delete comment (REST API)
+    @DeleteMapping("/api/comments/{id}")
+    @ResponseBody
+    public ResponseEntity<?> deleteCommentApi(@PathVariable Long id) {
+        try {
+            commentService.deleteComment(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error deleting comment: " + e.getMessage());
+        }
+    }
+}
