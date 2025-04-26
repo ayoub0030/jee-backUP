@@ -6,12 +6,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 
 @Controller
 public class PostController {
     @Autowired
     private PostService postService;
+
+    @PostConstruct
+    public void init() {
+        // Initialize sample data at startup
+        postService.initializeSampleData();
+    }
 
     // You have a duplicate mapping, removing the first one
     @GetMapping("/posts")
