@@ -46,7 +46,8 @@ public class AuthController {
             session.setAttribute("isAdmin", true);
             session.setAttribute("isAuthenticated", true);
             
-            return "redirect:/";
+            // Admin goes to the main admin home page
+            return "redirect:/admin/home";
         }
         
         // For regular users, check credentials in the database
@@ -60,7 +61,8 @@ public class AuthController {
             session.setAttribute("isAdmin", false);
             session.setAttribute("isAuthenticated", true);
             
-            return "redirect:/";
+            // Regular users go to the user home page
+            return "redirect:/user/home";
         } else {
             // Authentication failed
             redirectAttributes.addFlashAttribute("error", "Invalid credentials. Please try again.");
