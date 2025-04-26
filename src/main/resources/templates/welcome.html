@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Blog Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .welcome-header {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            padding: 100px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-header text-center mb-5">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Welcome to the Blog Application!</h1>
+            <p class="lead">Thank you for registering. Your account has been created successfully.</p>
+            <div class="mt-4">
+                <a th:href="@{/}" class="btn btn-light btn-lg px-4 me-md-2">
+                    <i class="fas fa-home me-2"></i> Go to Homepage
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="feature-icon bg-primary text-white mx-auto">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <h3>Read Blog Posts</h3>
+                <p class="text-muted">Browse through our collection of blog posts on various topics.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-icon bg-success text-white mx-auto">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>Join Discussions</h3>
+                <p class="text-muted">Comment on posts and engage with other readers.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-icon bg-info text-white mx-auto">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Community</h3>
+                <p class="text-muted">Connect with other members of our blogging community.</p>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-8 mx-auto text-center">
+                <h2>What's Next?</h2>
+                <p class="lead text-muted">Start exploring the blog or customize your profile settings.</p>
+                <div class="mt-4">
+                    <a th:href="@{/posts}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-newspaper me-2"></i> View Posts
+                    </a>
+                    <a th:href="@{/users}" class="btn btn-outline-secondary">
+                        <i class="fas fa-users me-2"></i> View Users
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light py-4 mt-auto">
+        <div class="container text-center">
+            <p class="text-muted mb-0">© 2025 Blog Application. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
