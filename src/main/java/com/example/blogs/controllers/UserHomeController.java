@@ -41,12 +41,23 @@ public class UserHomeController {
         model.addAttribute("userName", session.getAttribute("userName"));
         model.addAttribute("pageTitle", "Hespress Blog Platform - User Dashboard");
         
-        // Get some recent posts to display
+        // Get posts to display - load up to 6 recent posts
         try {
-            List<Post> recentPosts = postService.getPaginatedPosts(0, 3);
+            // Get most recent posts (the service already sorts by createdAt desc)
+            List<Post> recentPosts = postService.getPosts();
+            
+            // Only keep the first 6 posts to display on the homepage
+            if (recentPosts.size() > 6) {
+                recentPosts = recentPosts.subList(0, 6);
+            }
+            
             model.addAttribute("recentPosts", recentPosts);
+            
+            // Add total post count
+            model.addAttribute("totalPosts", postService.getPosts().size());
         } catch (Exception e) {
             // If there's an error, just continue without posts
+            model.addAttribute("error", "Error loading posts: " + e.getMessage());
         }
         
         return "user-home"; // Use the user-specific home page
