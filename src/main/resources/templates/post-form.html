@@ -151,11 +151,8 @@
                        placeholder="Enter post title">
             </div>
 
-            <div class="form-group">
-                <label for="author">Author</label>
-                <input type="text" class="form-control" id="author" th:field="*{author}" required 
-                       placeholder="Enter author name">
-            </div>
+            <!-- Author field is now hidden and will be set automatically in the controller -->
+            <input type="hidden" th:field="*{author}" />
 
             <div class="form-group">
                 <label for="content">Content</label>
