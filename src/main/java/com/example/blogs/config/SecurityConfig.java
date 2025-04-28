@@ -27,14 +27,21 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
+                // Public pages that don't require login
                 .requestMatchers("/", "/auth/**", "/css/**", "/js/**", "/images/**").permitAll()
+                // Allow access to all post views without authentication
+                .requestMatchers("/posts", "/posts/view/**").permitAll()
+                // Admin-only pages
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                // User pages that require authentication
+                .requestMatchers("/user/**", "/posts/new", "/posts/edit/**", "/posts/delete/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin((form) -> form
                 .loginPage("/auth/login")
                 .loginProcessingUrl("/auth/process-login")
-                .defaultSuccessUrl("/user/home", true)
+                // Redirect to posts page after login instead of user/home
+                .defaultSuccessUrl("/posts", true)
                 .failureUrl("/auth/login?error=true")
                 .permitAll()
             )
