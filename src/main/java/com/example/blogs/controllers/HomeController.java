@@ -1,9 +1,7 @@
 package com.example.blogs.controllers;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -13,25 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("pageTitle", "Hespress Blog Platform");
-        return "home";
-    }
-
-    @GetMapping("/user/home")
-    public String userHome(Model model) {
-        // Get current user from Spring Security
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated()) {
-            model.addAttribute("userName", auth.getName());
-        }
+    // Redirect to the appropriate home based on user type
+    @GetMapping("/home")
+    public String homeRedirect(HttpSession session) {
+        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
         
-        return "user-home";
-    }
-
-    @GetMapping("/admin/home")
-    public String adminHome() {
-        return "redirect:/posts"; // Redirect admin to posts page
+        if (isAdmin != null && isAdmin) {
+            return "redirect:/admin/home";
+        } else {
+            return "redirect:/user/home";
+        }
     }
 }
