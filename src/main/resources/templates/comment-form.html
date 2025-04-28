@@ -1,14 +1,13 @@
 <!-- Comment form fragment to be included in post-view.html -->
-<div class="card mb-4" th:fragment="commentForm(postId)">
+<div class="card mb-4 comment-form" th:fragment="commentForm(postId)">
     <div class="card-header bg-light">
         <h5 class="mb-0">Leave a Comment</h5>
     </div>
     <div class="card-body">
         <form th:action="@{/posts/{postId}/comments(postId=${postId})}" method="post">
-            <div class="mb-3">
-                <label for="authorName" class="form-label">Your Name</label>
-                <input type="text" class="form-control" id="authorName" name="authorName" placeholder="Enter your name">
-            </div>
+            <!-- Hidden field for author name - will be set automatically by the controller -->
+            <input type="hidden" id="authorName" name="authorName" th:value="${session.userName}">
+            
             <div class="mb-3">
                 <label for="content" class="form-label">Comment</label>
                 <textarea class="form-control" id="content" name="content" rows="4" required 

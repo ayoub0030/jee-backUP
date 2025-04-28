@@ -2,6 +2,7 @@ package com.example.blogs.controllers;
 
 import com.example.blogs.Services.CommentService;
 import com.example.blogs.models.Comment;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,19 +52,27 @@ public class CommentController {
     @PostMapping("/posts/{postId}/comments")
     public String addComment(@PathVariable Long postId, 
                             @ModelAttribute Comment comment,
-                            @RequestParam(required = false) Long userId,
-                            @RequestParam(required = false) String authorName,
+                            HttpSession session,
                             RedirectAttributes redirectAttributes) {
         try {
-            if (userId != null) {
-                commentService.createComment(comment, postId, userId);
-            } else {
-                // If no user ID is provided, use the author name
-                if (authorName == null || authorName.trim().isEmpty()) {
-                    authorName = "Anonymous";
-                }
-                commentService.createComment(comment, postId, authorName);
+            // Check if user is authenticated
+            if (session.getAttribute("isAuthenticated") == null || 
+                !(boolean) session.getAttribute("isAuthenticated")) {
+                redirectAttributes.addFlashAttribute("error", "You must be logged in to comment");
+                return "redirect:/auth/login";
             }
+            
+            // Get username from session
+            String userName = (String) session.getAttribute("userName");
+            
+            // Use the user's name from the session
+            if (userName != null && !userName.isEmpty()) {
+                commentService.createComment(comment, postId, userName);
+            } else {
+                // Fallback to anonymous if somehow the session username is not available
+                commentService.createComment(comment, postId, "Anonymous");
+            }
+            
             redirectAttributes.addFlashAttribute("success", "Comment added successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error adding comment: " + e.getMessage());
@@ -152,18 +161,25 @@ public class CommentController {
     @ResponseBody
     public ResponseEntity<?> addCommentApi(@PathVariable Long postId, 
                                         @RequestBody Comment comment,
-                                        @RequestParam(required = false) Long userId,
-                                        @RequestParam(required = false) String authorName) {
+                                        HttpSession session) {
         try {
-            Comment savedComment;
-            if (userId != null) {
-                savedComment = commentService.createComment(comment, postId, userId);
-            } else {
-                if (authorName == null || authorName.trim().isEmpty()) {
-                    authorName = "Anonymous";
-                }
-                savedComment = commentService.createComment(comment, postId, authorName);
+            // Check if user is authenticated
+            if (session.getAttribute("isAuthenticated") == null || 
+                !(boolean) session.getAttribute("isAuthenticated")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("You must be logged in to comment");
             }
+            
+            // Get username from session
+            String userName = (String) session.getAttribute("userName");
+            
+            Comment savedComment;
+            if (userName != null && !userName.isEmpty()) {
+                savedComment = commentService.createComment(comment, postId, userName);
+            } else {
+                savedComment = commentService.createComment(comment, postId, "Anonymous");
+            }
+            
             return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
