@@ -18,6 +18,9 @@ public class User {
     @Column(nullable = false, length = 255)
     private String password;
     
+    @Column(length = 20)
+    private String role = "ROLE_USER"; // Default role
+    
     // Constructors
     public User() {}
     
@@ -26,6 +29,14 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+    
+    public User(Long id, String name, String email, String password, String role) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
     
     // Getters and Setters
@@ -61,12 +72,21 @@ public class User {
         this.password = password;
     }
     
+    public String getRole() {
+        return role;
+    }
+    
+    public void setRole(String role) {
+        this.role = role;
+    }
+    
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

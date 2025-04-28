@@ -5,6 +5,7 @@ import com.example.blogs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +15,12 @@ import java.util.Optional;
 public class JpaUserService implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public JpaUserService(UserRepository userRepository) {
+    public JpaUserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -41,6 +44,12 @@ public class JpaUserService implements UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Email already exists: " + user.getEmail());
         }
+        
+        // Encode password if not already encoded
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        
         return userRepository.save(user);
     }
 
@@ -51,12 +60,30 @@ public class JpaUserService implements UserService {
             throw new IllegalArgumentException("User not found with id: " + id);
         }
         
+        // Get existing user
+        Optional<User> existingUserOpt = userRepository.findById(id);
+        if (existingUserOpt.isEmpty()) {
+            throw new IllegalArgumentException("User not found with id: " + id);
+        }
+        User existingUser = existingUserOpt.get();
+        
         // Check if updated email already exists with another user
         if (userRepository.existsByEmail(user.getEmail())) {
-            Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
-            if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+            Optional<User> emailUser = userRepository.findByEmail(user.getEmail());
+            if (emailUser.isPresent() && !emailUser.get().getId().equals(id)) {
                 throw new IllegalArgumentException("Email already exists: " + user.getEmail());
             }
+        }
+        
+        // Update password only if provided
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            // Encode password if not already encoded
+            if (!user.getPassword().startsWith("$2a$")) {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
+        } else {
+            // Keep existing password
+            user.setPassword(existingUser.getPassword());
         }
         
         // Set ID to ensure update and not insert
