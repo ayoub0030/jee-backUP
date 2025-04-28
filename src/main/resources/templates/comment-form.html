@@ -1,19 +1,21 @@
 <!-- Comment form fragment to be included in post-view.html -->
 <div class="card mb-4 comment-form" th:fragment="commentForm(postId)">
-    <div class="card-header bg-light">
-        <h5 class="mb-0">Leave a Comment</h5>
+    <div class="card-header" style="background-color: #ff7f00; color: white;">
+        <h5 class="mb-0"><i class="fas fa-comment me-2"></i>Leave a Comment</h5>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="background-color: #fff7f0;">
         <form th:action="@{/posts/{postId}/comments(postId=${postId})}" method="post">
             <!-- Hidden field for author name - will be set automatically by the controller -->
             <input type="hidden" id="authorName" name="authorName" th:value="${session.userName}">
             
             <div class="mb-3">
-                <label for="content" class="form-label">Comment</label>
+                <label for="content" class="form-label"><i class="fas fa-pencil-alt me-1"></i>Your Comment</label>
                 <textarea class="form-control" id="content" name="content" rows="4" required 
-                          placeholder="Write your comment here..."></textarea>
+                          placeholder="Write your comment here..." style="border-color: #ffcc99;"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Submit Comment</button>
+            <button type="submit" class="btn btn-primary" style="background-color: #ff7f00; border-color: #ff7f00;">
+                <i class="fas fa-paper-plane me-1"></i>Submit Comment
+            </button>
         </form>
     </div>
 </div>
