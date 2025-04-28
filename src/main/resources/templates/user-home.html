@@ -67,6 +67,7 @@
             margin-bottom: 1.5rem;
             display: -webkit-box;
             -webkit-line-clamp: 3;
+            line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -221,7 +222,7 @@
                             <a th:href="@{/posts/view/{id}(id=${post.id})}" class="btn btn-primary btn-sm">
                                 <i class="fas fa-book-open mr-1"></i> Read More
                             </a>
-                            <div>
+                            <div th:if="${session.isAdmin != null && session.isAdmin == true}">
                                 <a th:href="@{/posts/edit/{id}(id=${post.id})}" class="btn btn-warning btn-sm mr-1">
                                     <i class="fas fa-edit"></i>
                                 </a>
