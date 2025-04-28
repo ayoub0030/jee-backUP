@@ -149,9 +149,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/posts"><i class="fas fa-newspaper"></i> Posts</a>
                     </li>
+                    <!-- Only show Users and Comments links to admin users -->
+                    <li class="nav-item" th:if="${session.isAdmin != null && session.isAdmin == true}">
+                        <a class="nav-link" href="/users"><i class="fas fa-users"></i> Users</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.isAdmin != null && session.isAdmin == true}">
+                        <a class="nav-link" href="/comments"><i class="fas fa-comments"></i> Comments</a>
+                    </li>
                 </ul>
                 <div class="d-flex">
-                    <div class="dropdown">
+                    <div class="dropdown" th:if="${session.isAuthenticated != null && session.isAuthenticated == true}">
                         <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton" 
                                 data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-2"></i>
@@ -165,6 +172,9 @@
                             </li>
                         </ul>
                     </div>
+                    <a class="btn btn-outline-light" href="/auth/login" th:unless="${session.isAuthenticated != null && session.isAuthenticated == true}">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                    </a>
                 </div>
             </div>
         </div>

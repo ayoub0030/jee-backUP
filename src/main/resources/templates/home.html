@@ -164,27 +164,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/posts"><i class="fas fa-newspaper"></i> Posts</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- Only show Users and Comments links to admin users -->
+                    <li class="nav-item" th:if="${session.isAdmin != null && session.isAdmin == true}">
                         <a class="nav-link" href="/users"><i class="fas fa-users"></i> Users</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" th:if="${session.isAdmin != null && session.isAdmin == true}">
                         <a class="nav-link" href="/comments"><i class="fas fa-comments"></i> Comments</a>
                     </li>
                 </ul>
                 <!-- User profile and logout -->
                 <div class="d-flex">
-                    <div class="dropdown">
+                    <div class="dropdown" th:if="${session.isAuthenticated != null && session.isAuthenticated == true}">
                         <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle me-1"></i>
-                            <span th:text="${userName}">User</span>
+                            <span th:text="${session.userName}">User</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <span class="dropdown-item-text" th:if="${isAdmin == true}">
-                                    <span class="badge bg-primary">Administrator</span>
-                                </span>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="/auth/logout">
                                     <i class="fas fa-sign-out-alt me-2"></i> Logout
@@ -192,6 +187,9 @@
                             </li>
                         </ul>
                     </div>
+                    <a class="btn btn-outline-light" href="/auth/login" th:unless="${session.isAuthenticated != null && session.isAuthenticated == true}">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                    </a>
                 </div>
             </div>
         </div>
@@ -232,7 +230,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <!-- Only show Users management card to admin users -->
+            <div class="col-md-4" th:if="${session.isAdmin != null && session.isAdmin == true}">
                 <div class="card text-center h-100">
                     <div class="card-body">
                         <div class="card-icon">
@@ -244,7 +243,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <!-- Only show Comments management card to admin users -->
+            <div class="col-md-4" th:if="${session.isAdmin != null && session.isAdmin == true}">
                 <div class="card text-center h-100">
                     <div class="card-body">
                         <div class="card-icon">

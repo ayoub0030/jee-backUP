@@ -144,8 +144,25 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/posts"><i class="fas fa-newspaper me-1"></i> Posts</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" th:if="${session.isAdmin != null && session.isAdmin == true}">
                         <a class="nav-link" href="/users"><i class="fas fa-users me-1"></i> Users</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.isAdmin != null && session.isAdmin == true}">
+                        <a class="nav-link" href="/comments"><i class="fas fa-comment me-1"></i> Comments</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown" th:if="${session.isAuthenticated != null && session.isAuthenticated == true}">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i> <span th:text="${session.userName}">User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item" th:unless="${session.isAuthenticated != null && session.isAuthenticated == true}">
+                        <a class="nav-link" href="/auth/login"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
                     </li>
                 </ul>
             </div>
